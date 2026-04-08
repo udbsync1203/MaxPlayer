@@ -6,9 +6,10 @@ import (
 	"strings"
 )
 
-func (a *App) ScanAudioFiles(folder string) ([]AudioFile, error) {
+func (a *App) ScanAudioFiles(playlistName string) ([]AudioFile, error) {
 	var result []AudioFile
 
+	folder := a.config.MusicFolder + string(os.PathSeparator) + playlistName
 	err := filepath.Walk(folder, func(path string, info os.FileInfo, err error) error {
 		if err != nil || info.IsDir() {
 			return nil
