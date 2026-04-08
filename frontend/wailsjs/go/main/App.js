@@ -5,3 +5,15 @@
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
+
+export function Hello() {
+  return window['go']['main']['App']['Hello']();
+}
+
+export function ScanAudioFiles(arg1) {
+  return window['go']['main']['App']['ScanAudioFiles'](arg1);
+}
+
+export function SelectFolder() {
+  return window['go']['main']['App']['SelectFolder']();
+}
