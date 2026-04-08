@@ -28,9 +28,9 @@ func (a *App) ScanAudioFiles(folder string) ([]AudioFile, error) {
 	return result, err
 }
 
-func (a *App) GetPlaylists(folder string) ([]Playlist, error) {
+func (a *App) GetPlaylists() ([]Playlist, error) {
 	var playlists []Playlist
-
+	folder := a.config.MusicFolder
 	entries, err := os.ReadDir(folder)
 	if err != nil {
 		return nil, err

@@ -21,12 +21,12 @@ func ReadMetadata(path string) AudioFile {
 
 	title := meta.Title()
 	if title == "" {
-		title = "Untitled"
+		title = "Без названия"
 	}
 
 	artist := meta.Artist()
 	if artist == "" {
-		artist = "Unknown Artist"
+		artist = "Неизвестный автор"
 	}
 
 	cover := ""
@@ -45,7 +45,7 @@ func ReadMetadata(path string) AudioFile {
 func defaultAudio(path string) AudioFile {
 	return AudioFile{
 		Path:   path,
-		Title:  "Untitled",
-		Artist: "Unknown Artist",
+		Title:  "Без названия",
+		Artist: "Неизвестный автор",
 	}
 }
