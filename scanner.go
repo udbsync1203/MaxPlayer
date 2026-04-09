@@ -20,7 +20,7 @@ func (a *App) ScanAudioFiles(playlistName string) ([]AudioFile, error) {
 			return nil
 		}
 
-		audio := ReadMetadata(path)
+		audio := ReadMetadata(path, a.config.MusicFolder)
 		result = append(result, audio)
 
 		return nil
