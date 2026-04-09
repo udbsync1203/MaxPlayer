@@ -1,4 +1,4 @@
-package main
+package models
 
 type AudioFile struct {
 	Path        string `json:"path"`

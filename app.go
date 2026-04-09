@@ -2,25 +2,29 @@ package main
 
 import (
 	"context"
+
+	"MaxPlayer/config"
+	"MaxPlayer/library"
+	"MaxPlayer/models"
 )
 
 // App struct
 type App struct {
 	ctx        context.Context
 	configPath string
-	config     Config
+	config     config.Config
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
 	app := &App{}
 
-	path, err := getConfigPath()
+	path, err := config.Path()
 	if err != nil {
 		panic(err)
 	}
 	app.configPath = path
-	app.config = LoadConfig(path)
+	app.config = config.Load(path)
 
 	return app
 }
@@ -36,10 +40,26 @@ func (a *App) Hello() string {
 }
 
 func (a *App) SetMusicFolder(path string) {
-	a.config.MusicFolder = path
-	_ = SaveConfig(a.configPath, a.config)
+	normalized := config.NormalizeMusicFolder(path)
+	if err := library.ValidateMusicFolder(normalized); err != nil {
+		println("Invalid music folder:", err.Error())
+		return
+	}
+
+	a.config.MusicFolder = normalized
+	if err := config.Save(a.configPath, a.config); err != nil {
+		println("Error saving config:", err.Error())
+	}
 }
 
 func (a *App) GetMusicFolder() string {
 	return a.config.MusicFolder
+}
+
+func (a *App) ScanAudioFiles(playlistName string) ([]models.AudioFile, error) {
+	return library.ScanAudioFiles(a.config.MusicFolder, playlistName)
+}
+
+func (a *App) GetPlaylists() ([]models.Playlist, error) {
+	return library.GetPlaylists(a.config.MusicFolder)
 }

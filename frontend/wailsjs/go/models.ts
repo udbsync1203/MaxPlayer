@@ -1,4 +1,4 @@
-export namespace main {
+export namespace models {
 	
 	export class AudioFile {
 	    path: string;
@@ -34,4 +34,3 @@ export namespace main {
 	}
 
 }
-

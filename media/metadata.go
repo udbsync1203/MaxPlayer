@@ -1,14 +1,16 @@
-package main
+package media
 
 import (
 	"encoding/base64"
 	"os"
+	"path/filepath"
 	"strings"
 
+	"MaxPlayer/models"
 	"github.com/dhowden/tag"
 )
 
-func ReadMetadata(path string, musicFolder string) AudioFile {
+func ReadMetadata(path string, musicFolder string) models.AudioFile {
 	file, err := os.Open(path)
 	if err != nil {
 		return defaultAudio(path, musicFolder)
@@ -31,9 +33,9 @@ func ReadMetadata(path string, musicFolder string) AudioFile {
 		cover = base64.StdEncoding.EncodeToString(pic.Data)
 	}
 
-	relativePath := strings.TrimPrefix(path, musicFolder)
+	relativePath := relativePathFromRoot(path, musicFolder)
 
-	return AudioFile{
+	return models.AudioFile{
 		Path:        relativePath,
 		Title:       title,
 		Artist:      artist,
@@ -41,11 +43,24 @@ func ReadMetadata(path string, musicFolder string) AudioFile {
 	}
 }
 
-func defaultAudio(path string, musicFolder string) AudioFile {
-	relativePath := strings.TrimPrefix(path, musicFolder)
-	return AudioFile{
+func defaultAudio(path string, musicFolder string) models.AudioFile {
+	relativePath := relativePathFromRoot(path, musicFolder)
+	return models.AudioFile{
 		Path:   relativePath,
 		Title:  "Без названия",
 		Artist: "Неизвестный автор",
 	}
+}
+
+func relativePathFromRoot(path string, musicFolder string) string {
+	rel, err := filepath.Rel(musicFolder, path)
+	if err != nil {
+		return strings.TrimPrefix(path, musicFolder)
+	}
+
+	if rel == "." {
+		return ""
+	}
+
+	return filepath.ToSlash(rel)
 }

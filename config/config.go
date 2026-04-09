@@ -1,16 +1,17 @@
-package main
+package config
 
 import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type Config struct {
 	MusicFolder string `json:"musicFolder"`
 }
 
-func getConfigPath() (string, error) {
+func Path() (string, error) {
 	dir, err := os.UserConfigDir()
 	if err != nil {
 		return "", err
@@ -26,13 +27,13 @@ func getConfigPath() (string, error) {
 	return filepath.Join(appDir, "config.json"), nil
 }
 
-func LoadConfig(path string) Config {
+func Load(path string) Config {
 	var config Config
 
 	data, err := os.ReadFile(path)
 	if err != nil {
 		config = Config{}
-		_ = SaveConfig(path, config)
+		_ = Save(path, config)
 		return config
 	}
 
@@ -40,11 +41,20 @@ func LoadConfig(path string) Config {
 	return config
 }
 
-func SaveConfig(path string, config Config) error {
+func Save(path string, config Config) error {
 	data, err := json.MarshalIndent(config, "", "  ")
 	if err != nil {
 		return err
 	}
 
 	return os.WriteFile(path, data, 0644)
+}
+
+func NormalizeMusicFolder(path string) string {
+	trimmed := strings.TrimSpace(path)
+	if trimmed == "" {
+		return ""
+	}
+
+	return filepath.Clean(trimmed)
 }
