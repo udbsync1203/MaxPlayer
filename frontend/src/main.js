@@ -10,6 +10,7 @@ const folderPathEl = document.getElementById("folderPath");
 const playlistsEl = document.getElementById("playlists");
 const tracksEl = document.getElementById("tracks");
 const btn = document.getElementById("selectFolderBtn");
+const refreshBtn = document.getElementById("refreshBtn");
 
 let currentPlaylist = null;
 
@@ -20,18 +21,14 @@ window.addEventListener("DOMContentLoaded", async () => {
 async function init() {
   const folder = await GetMusicFolder();
   folderPathEl.textContent = folder || "не выбрана";
-
   if (!folder) return;
-
   await loadPlaylists();
 }
 
 btn.addEventListener("click", async () => {
   try {
     const path = await SelectFolder();
-
     if (!path) return;
-
     await SetMusicFolder(path);
     await init();
   } catch (e) {
@@ -39,24 +36,27 @@ btn.addEventListener("click", async () => {
   }
 });
 
+refreshBtn.addEventListener("click", async () => {
+  if (!currentPlaylist) return;
+  try {
+    await loadTracks(currentPlaylist);
+  } catch (e) {
+    console.error("Ошибка обновления:", e);
+  }
+});
+
 async function loadPlaylists() {
   playlistsEl.innerHTML = "Загрузка...";
-
   const playlists = await GetPlaylists();
-
   playlistsEl.innerHTML = "";
-
   playlists.forEach((pl, index) => {
     const el = document.createElement("div");
     el.className = "playlist";
     el.textContent = pl.name;
-
     el.addEventListener("click", () => {
       selectPlaylist(pl.name, el);
     });
-
     playlistsEl.appendChild(el);
-
     if (index === 0) {
       selectPlaylist(pl.name, el);
     }
@@ -65,18 +65,15 @@ async function loadPlaylists() {
 
 async function selectPlaylist(name, element) {
   currentPlaylist = name;
-
   document
     .querySelectorAll(".playlist")
     .forEach((el) => el.classList.remove("active"));
   element.classList.add("active");
-
   await loadTracks(name);
 }
 
 async function loadTracks(playlistName) {
   tracksEl.innerHTML = "Загрузка...";
-
   try {
     const tracks = await ScanAudioFiles(playlistName);
     renderTracks(tracks);
@@ -88,12 +85,10 @@ async function loadTracks(playlistName) {
 
 function renderTracks(tracks) {
   tracksEl.innerHTML = "";
-
   if (!tracks.length) {
     tracksEl.innerHTML = "Нет треков";
     return;
   }
-
   tracks.forEach((track) => {
     const el = createTrack(track);
     tracksEl.appendChild(el);
@@ -103,7 +98,6 @@ function renderTracks(tracks) {
 function createTrack(track) {
   const div = document.createElement("div");
   div.className = "track";
-
   div.dataset.path = track.path;
 
   const img = document.createElement("img");
@@ -124,7 +118,6 @@ function createTrack(track) {
 
   info.appendChild(title);
   info.appendChild(artist);
-
   div.appendChild(img);
   div.appendChild(info);
 
