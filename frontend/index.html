@@ -1,98 +1,98 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <title>Music App</title>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Music App</title>
 
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 0;
-    }
+        <style>
+            body {
+                font-family: sans-serif;
+                margin: 0;
+            }
 
-    .layout {
-      display: flex;
-      height: 100vh;
-    }
+            .layout {
+                display: flex;
+                height: 100vh;
+            }
 
-    /* ===== sidebar ===== */
-    .sidebar {
-      width: 250px;
-      border-right: 1px solid #eee;
-      padding: 15px;
-    }
+            /* ===== sidebar ===== */
+            .sidebar {
+                width: 250px;
+                border-right: 1px solid #eee;
+                padding: 15px;
+            }
 
-    .playlist {
-      padding: 8px;
-      cursor: pointer;
-      border-radius: 6px;
-    }
+            .playlist {
+                padding: 8px;
+                cursor: pointer;
+                border-radius: 6px;
+            }
 
-    .playlist:hover {
-      background: #f0f0f0;
-    }
+            .playlist:hover {
+                background: #f0f0f0;
+            }
 
-    .playlist.active {
-      background: #ddd;
-      font-weight: bold;
-    }
+            .playlist.active {
+                background: #ddd;
+                font-weight: bold;
+            }
 
-    /* ===== main ===== */
-    .main {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-    }
+            /* ===== main ===== */
+            .main {
+                flex: 1;
+                padding: 20px;
+                overflow-y: auto;
+            }
 
-    button {
-      padding: 10px;
-      margin-bottom: 10px;
-      cursor: pointer;
-    }
+            button {
+                padding: 10px;
+                margin-bottom: 10px;
+                cursor: pointer;
+            }
 
-    .track {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-    }
+            .track {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                padding: 10px;
+                border-bottom: 1px solid #eee;
+            }
 
-    .cover {
-      width: 60px;
-      height: 60px;
-      border-radius: 8px;
-      object-fit: cover;
-    }
+            .cover {
+                width: 60px;
+                height: 60px;
+                border-radius: 8px;
+                object-fit: cover;
+            }
 
-    .title {
-      font-weight: bold;
-    }
+            .title {
+                font-weight: bold;
+            }
 
-    .artist {
-      color: #666;
-      font-size: 14px;
-    }
-  </style>
-</head>
+            .artist {
+                color: #666;
+                font-size: 14px;
+            }
+        </style>
+    </head>
 
-<body>
-  <div class="layout">
-    <!-- ПЛЕЙЛИСТЫ -->
-    <div class="sidebar">
-      <button id="selectFolderBtn">Выбрать папку</button>
-      <p id="folderPath">не выбрана</p>
+    <body>
+        <div class="layout">
+            <!-- ПЛЕЙЛИСТЫ -->
+            <div class="sidebar">
+                <button id="selectFolderBtn">Выбрать папку</button>
+                <p id="folderPath">не выбрана</p>
 
-      <div id="playlists"></div>
-    </div>
+                <div id="playlists"></div>
+            </div>
 
-    <!-- ТРЕКИ -->
-    <div class="main">
-      <h2>Треки</h2>
-      <div id="tracks"></div>
-    </div>
-  </div>
+            <!-- ТРЕКИ -->
+            <div class="main">
+                <h2>Треки</h2>
+                <div id="tracks"></div>
+            </div>
+        </div>
 
-  <script type="module" src="/src/main.js"></script>
-</body>
+        <script type="module" src="./src/main.js"></script>
+    </body>
 </html>
