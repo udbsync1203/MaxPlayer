@@ -1,3 +1,6 @@
+// ===============================
+// main.js (полностью заменить)
+// ===============================
 
 import {
   GetMusicFolder,
@@ -12,6 +15,7 @@ const playlistsEl = document.getElementById("playlists");
 const tracksEl = document.getElementById("tracks");
 const btn = document.getElementById("selectFolderBtn");
 
+// элементы плеера
 const playBtn = document.getElementById("playBtn");
 const stopBtn = document.getElementById("stopBtn");
 const prevBtn = document.getElementById("prevBtn");
@@ -30,6 +34,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   await init();
 });
 
+// =====================
+// INIT
+// =====================
 async function init() {
   const folder = await GetMusicFolder();
   folderPathEl.textContent = folder || "не выбрана";
@@ -39,6 +46,9 @@ async function init() {
   await loadPlaylists();
 }
 
+// =====================
+// выбор папки
+// =====================
 btn.addEventListener("click", async () => {
   const path = await SelectFolder();
 
@@ -48,6 +58,9 @@ btn.addEventListener("click", async () => {
   await init();
 });
 
+// =====================
+// PLAYLISTS
+// =====================
 async function loadPlaylists() {
   playlistsEl.innerHTML = "Загрузка...";
 
@@ -84,6 +97,9 @@ async function selectPlaylist(name, element) {
   await loadTracks(name);
 }
 
+// =====================
+// TRACKS
+// =====================
 async function loadTracks(playlistName) {
   tracksEl.innerHTML = "Загрузка...";
 
@@ -140,6 +156,9 @@ function createTrack(track, index) {
   return div;
 }
 
+// =====================
+// PLAYER
+// =====================
 function playTrack(index) {
   if (index < 0 || index >= currentTracks.length) return;
 
@@ -198,9 +217,12 @@ function prevTrack() {
   playTrack(currentTrackIndex);
 }
 
+// авто следующий трек
 audio.addEventListener("ended", () => {
   nextTrack();
 });
+
+// progress bar
 
 audio.addEventListener("timeupdate", () => {
   if (!audio.duration) return;
@@ -208,7 +230,8 @@ audio.addEventListener("timeupdate", () => {
   const percent = (audio.currentTime / audio.duration) * 100;
   progressFill.style.width = percent + "%";
 });
-//перемотка по клику
+
+// перемотка по клику
 progressBar.addEventListener("click", (e) => {
   if (!audio.duration) return;
 
