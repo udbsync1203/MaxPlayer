@@ -1,81 +1,233 @@
 <!doctype html>
 <html lang="ru">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Music App</title>
-        <style>
-            body {
-                font-family: sans-serif;
-                margin: 0;
-            }
-            .layout {
-                display: flex;
-                height: 100vh;
-            }
-            .sidebar {
-                width: 250px;
-                border-right: 1px solid #eee;
-                padding: 15px;
-            }
-            .playlist {
-                padding: 8px;
-                cursor: pointer;
-                border-radius: 6px;
-            }
-            .playlist:hover {
-                background: #f0f0f0;
-            }
-            .playlist.active {
-                background: #ddd;
-                font-weight: bold;
-            }
-            .main {
-                flex: 1;
-                padding: 20px;
-                overflow-y: auto;
-            }
-            button {
-                padding: 10px;
-                margin-bottom: 10px;
-                cursor: pointer;
-            }
-            .track {
-                display: flex;
-                align-items: center;
-                gap: 15px;
-                padding: 10px;
-                border-bottom: 1px solid #eee;
-            }
-            .cover {
-                width: 60px;
-                height: 60px;
-                border-radius: 8px;
-                object-fit: cover;
-            }
-            .title {
-                font-weight: bold;
-            }
-            .artist {
-                color: #666;
-                font-size: 14px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="layout">
-            <div class="sidebar">
-                <button id="selectFolderBtn">Выбрать папку</button>
-                <p id="folderPath">не выбрана</p>
-                <div id="playlists"></div>
-            </div>
-            <div class="main">
-                <div style="display: flex; align-items: center; gap: 10px">
-                    <h2 style="margin: 0">Треки</h2>
-                    <button id="refreshBtn">Обновить</button>
-                </div>
-                <div id="tracks"></div>
-            </div>
-        </div>
-        <script type="module" src="./src/main.js"></script>
-    </body>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Music App</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f5f5f5;
+}
+
+.layout{
+  display:flex;
+  height:100vh;
+}
+
+/*  SIDEBAR */
+
+.sidebar{
+  width:260px;
+  background:#fff;
+  border-right:1px solid #ddd;
+  padding:15px;
+  overflow-y:auto;
+}
+
+.sidebar button{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#4caf50;
+  color:#fff;
+  font-size:15px;
+  cursor:pointer;
+}
+
+.sidebar button:hover{
+  background:#43a047;
+}
+
+#folderPath{
+  margin:12px 0;
+  font-size:13px;
+  color:#666;
+  word-break:break-word;
+}
+
+.playlist{
+  padding:10px;
+  border-radius:8px;
+  cursor:pointer;
+  margin-bottom:6px;
+  transition:.2s;
+}
+
+.playlist:hover{
+  background:#eee;
+}
+
+.playlist.active{
+  background:#ddd;
+  font-weight:bold;
+}
+
+.main{
+  flex:1;
+  padding:20px;
+  overflow-y:auto;
+}
+
+/*плеер*/
+
+.player{
+  background:#fff;
+  border-radius:14px;
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+#nowPlaying{
+  text-align:center;
+  font-weight:bold;
+  margin-bottom:15px;
+  color:#333;
+}
+
+/*кнопки */
+
+.controls{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  margin-bottom:18px;
+}
+
+.controls button{
+  width:52px;
+  height:52px;
+  border:none;
+  border-radius:50%;
+  background:#222;
+  color:#fff;
+  font-size:22px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.controls button:hover{
+  transform:scale(1.08);
+  background:#111;
+}
+
+.controls #playBtn{
+  width:64px;
+  height:64px;
+  font-size:28px;
+  background:#4caf50;
+}
+
+.controls #playBtn:hover{
+  background:#43a047;
+}
+
+/*прогресс*/
+
+.progress{
+  width:100%;
+  height:8px;
+  background:#ddd;
+  border-radius:30px;
+  overflow:hidden;
+  cursor:pointer;
+}
+
+.fill{
+  width:0%;
+  height:100%;
+  background:#4caf50;
+}
+
+/*треки*/
+
+.track{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  background:#fff;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:10px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.track:hover{
+  transform:translateY(-2px);
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.cover{
+  width:60px;
+  height:60px;
+  border-radius:10px;
+  object-fit:cover;
+  background:#ddd;
+}
+
+.title{
+  font-weight:bold;
+  color:#222;
+}
+
+.artist{
+  color:#666;
+  font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <button id="selectFolderBtn">Выбрать папку</button>
+    <p id="folderPath">не выбрана</p>
+    <div id="playlists"></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- PLAYER -->
+    <div class="player">
+
+      <div id="nowPlaying">Ничего не играет</div>
+
+      <div class="controls">
+        <button id="prevBtn">⏮</button>
+        <button id="playBtn">▶</button>
+        <button id="stopBtn">⏹</button>
+        <button id="nextBtn">⏭</button>
+      </div>
+
+      <div id="progressBar" class="progress">
+        <div id="progressFill" class="fill"></div>
+      </div>
+
+    </div>
+
+    <!-- TRACKS -->
+    <h2>Треки</h2>
+    <div id="tracks"></div>
+
+  </div>
+
+</div>
+
+<script type="module" src="/src/main.js"></script>
+
+</body>
 </html>

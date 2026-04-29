@@ -1,3 +1,4 @@
+
 import {
   GetMusicFolder,
   SetMusicFolder,
@@ -12,7 +13,19 @@ const tracksEl = document.getElementById("tracks");
 const btn = document.getElementById("selectFolderBtn");
 const refreshBtn = document.getElementById("refreshBtn");
 
+const playBtn = document.getElementById("playBtn");
+const stopBtn = document.getElementById("stopBtn");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const progressBar = document.getElementById("progressBar");
+const progressFill = document.getElementById("progressFill");
+const nowPlaying = document.getElementById("nowPlaying");
+
 let currentPlaylist = null;
+let currentTracks = [];
+let currentTrackIndex = -1;
+
+const audio = new Audio();
 
 window.addEventListener("DOMContentLoaded", async () => {
   await init();
@@ -26,14 +39,12 @@ async function init() {
 }
 
 btn.addEventListener("click", async () => {
-  try {
-    const path = await SelectFolder();
-    if (!path) return;
-    await SetMusicFolder(path);
-    await init();
-  } catch (e) {
-    console.error("Ошибка выбора папки:", e);
-  }
+  const path = await SelectFolder();
+
+  if (!path) return;
+
+  await SetMusicFolder(path);
+  await init();
 });
 
 refreshBtn.addEventListener("click", async () => {
@@ -68,19 +79,18 @@ async function selectPlaylist(name, element) {
   document
     .querySelectorAll(".playlist")
     .forEach((el) => el.classList.remove("active"));
+
   element.classList.add("active");
   await loadTracks(name);
 }
 
 async function loadTracks(playlistName) {
   tracksEl.innerHTML = "Загрузка...";
-  try {
-    const tracks = await ScanAudioFiles(playlistName);
-    renderTracks(tracks);
-  } catch (e) {
-    console.error(e);
-    tracksEl.innerHTML = "Ошибка загрузки";
-  }
+
+  const tracks = await ScanAudioFiles(playlistName);
+
+  currentTracks = tracks;
+  renderTracks(tracks);
 }
 
 function renderTracks(tracks) {
@@ -89,16 +99,16 @@ function renderTracks(tracks) {
     tracksEl.innerHTML = "Нет треков";
     return;
   }
-  tracks.forEach((track) => {
-    const el = createTrack(track);
-    tracksEl.appendChild(el);
+
+  tracks.forEach((track, index) => {
+    const div = createTrack(track, index);
+    tracksEl.appendChild(div);
   });
 }
 
-function createTrack(track) {
+function createTrack(track, index) {
   const div = document.createElement("div");
   div.className = "track";
-  div.dataset.path = track.path;
 
   const img = document.createElement("img");
   img.className = "cover";
@@ -122,8 +132,87 @@ function createTrack(track) {
   div.appendChild(info);
 
   div.addEventListener("click", () => {
-    console.log(track.path);
+    playTrack(index);
   });
 
   return div;
 }
+
+function playTrack(index) {
+  if (index < 0 || index >= currentTracks.length) return;
+
+  currentTrackIndex = index;
+
+  const track = currentTracks[index];
+
+  audio.src = track.path;
+  audio.play();
+
+  nowPlaying.textContent = `${track.title} - ${track.artist}`;
+}
+
+playBtn.addEventListener("click", () => {
+  if (audio.src) {
+    audio.play();
+  } else if (currentTracks.length > 0) {
+    playTrack(0);
+  }
+});
+
+stopBtn.addEventListener("click", () => {
+  audio.pause();
+  audio.currentTime = 0;
+});
+
+nextBtn.addEventListener("click", () => {
+  nextTrack();
+});
+
+prevBtn.addEventListener("click", () => {
+  prevTrack();
+});
+
+function nextTrack() {
+  if (!currentTracks.length) return;
+
+  currentTrackIndex++;
+
+  if (currentTrackIndex >= currentTracks.length) {
+    currentTrackIndex = 0;
+  }
+
+  playTrack(currentTrackIndex);
+}
+
+function prevTrack() {
+  if (!currentTracks.length) return;
+
+  currentTrackIndex--;
+
+  if (currentTrackIndex < 0) {
+    currentTrackIndex = currentTracks.length - 1;
+  }
+
+  playTrack(currentTrackIndex);
+}
+
+audio.addEventListener("ended", () => {
+  nextTrack();
+});
+
+audio.addEventListener("timeupdate", () => {
+  if (!audio.duration) return;
+
+  const percent = (audio.currentTime / audio.duration) * 100;
+  progressFill.style.width = percent + "%";
+});
+//перемотка по клику
+progressBar.addEventListener("click", (e) => {
+  if (!audio.duration) return;
+
+  const rect = progressBar.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const percent = x / rect.width;
+
+  audio.currentTime = percent * audio.duration;
+});
