@@ -11,6 +11,7 @@ const folderPathEl = document.getElementById("folderPath");
 const playlistsEl = document.getElementById("playlists");
 const tracksEl = document.getElementById("tracks");
 const btn = document.getElementById("selectFolderBtn");
+const refreshBtn = document.getElementById("refreshBtn");
 
 const playBtn = document.getElementById("playBtn");
 const stopBtn = document.getElementById("stopBtn");
@@ -33,9 +34,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 async function init() {
   const folder = await GetMusicFolder();
   folderPathEl.textContent = folder || "не выбрана";
-
   if (!folder) return;
-
   await loadPlaylists();
 }
 
@@ -48,24 +47,27 @@ btn.addEventListener("click", async () => {
   await init();
 });
 
+refreshBtn.addEventListener("click", async () => {
+  if (!currentPlaylist) return;
+  try {
+    await loadTracks(currentPlaylist);
+  } catch (e) {
+    console.error("Ошибка обновления:", e);
+  }
+});
+
 async function loadPlaylists() {
   playlistsEl.innerHTML = "Загрузка...";
-
   const playlists = await GetPlaylists();
-
   playlistsEl.innerHTML = "";
-
   playlists.forEach((pl, index) => {
     const el = document.createElement("div");
     el.className = "playlist";
     el.textContent = pl.name;
-
     el.addEventListener("click", () => {
       selectPlaylist(pl.name, el);
     });
-
     playlistsEl.appendChild(el);
-
     if (index === 0) {
       selectPlaylist(pl.name, el);
     }
@@ -74,13 +76,11 @@ async function loadPlaylists() {
 
 async function selectPlaylist(name, element) {
   currentPlaylist = name;
-
   document
     .querySelectorAll(".playlist")
     .forEach((el) => el.classList.remove("active"));
 
   element.classList.add("active");
-
   await loadTracks(name);
 }
 
@@ -95,7 +95,6 @@ async function loadTracks(playlistName) {
 
 function renderTracks(tracks) {
   tracksEl.innerHTML = "";
-
   if (!tracks.length) {
     tracksEl.innerHTML = "Нет треков";
     return;
@@ -129,7 +128,6 @@ function createTrack(track, index) {
 
   info.appendChild(title);
   info.appendChild(artist);
-
   div.appendChild(img);
   div.appendChild(info);
 
