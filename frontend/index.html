@@ -6,183 +6,280 @@
 <title>Music App</title>
 
 <style>
-*{
-  box-sizing:border-box;
+* {
+  box-sizing: border-box;
 }
 
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f5f5f5;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
 }
 
-.layout{
-  display:flex;
-  height:100vh;
+.layout {
+  display: flex;
+  height: 100vh;
 }
 
-/*  SIDEBAR */
-
-.sidebar{
-  width:260px;
-  background:#fff;
-  border-right:1px solid #ddd;
-  padding:15px;
-  overflow-y:auto;
+/* ---------- SIDEBAR ---------- */
+.sidebar {
+  width: 260px;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  padding: 15px;
+  overflow-y: auto;
 }
 
-.sidebar button{
-  width:100%;
-  padding:10px;
-  border:none;
-  border-radius:10px;
-  background:#4caf50;
-  color:#fff;
-  font-size:15px;
-  cursor:pointer;
+.sidebar__button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #4caf50;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
 }
 
-.sidebar button:hover{
-  background:#43a047;
+.sidebar__button:hover {
+  background: #43a047;
 }
 
-#folderPath{
-  margin:12px 0;
-  font-size:13px;
-  color:#666;
-  word-break:break-word;
+.sidebar__path {
+  margin: 12px 0;
+  font-size: 13px;
+  color: #666;
+  word-break: break-word;
 }
 
-.playlist{
-  padding:10px;
-  border-radius:8px;
-  cursor:pointer;
-  margin-bottom:6px;
-  transition:.2s;
+/* ---------- PLAYLIST ---------- */
+.playlist {
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 6px;
+  transition: .2s;
 }
 
-.playlist:hover{
-  background:#eee;
+.playlist:hover {
+  background: #eee;
 }
 
-.playlist.active{
-  background:#ddd;
-  font-weight:bold;
+.playlist--active {
+  background: #ddd;
+  font-weight: bold;
 }
 
-.main{
-  flex:1;
-  padding:20px;
-  overflow-y:auto;
+/* ---------- MAIN ---------- */
+.main {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
 }
 
-/*плеер*/
-
-.player{
-  background:#fff;
-  border-radius:14px;
-  padding:20px;
-  margin-bottom:20px;
-  box-shadow:0 5px 15px rgba(0,0,0,.08);
+/* ---------- PLAYER ---------- */
+.player {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, .08);
 }
 
-#nowPlaying{
-  text-align:center;
-  font-weight:bold;
-  margin-bottom:15px;
-  color:#333;
+/* Панель "Сейчас играет" */
+.now-playing {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 14px;
 }
 
-/*кнопки */
-
-.controls{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:14px;
-  margin-bottom:18px;
+.now-playing__cover {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #ddd;
 }
 
-.controls button{
-  width:52px;
-  height:52px;
-  border:none;
-  border-radius:50%;
-  background:#222;
-  color:#fff;
-  font-size:22px;
-  cursor:pointer;
-  transition:.2s;
+.now-playing__info {
+  flex: 1;
 }
 
-.controls button:hover{
-  transform:scale(1.08);
-  background:#111;
+.now-playing__title {
+  font-weight: bold;
+  color: #222;
+  font-size: 14px;
 }
 
-.controls #playBtn{
-  width:64px;
-  height:64px;
-  font-size:28px;
-  background:#4caf50;
+.now-playing__artist {
+  color: #666;
+  font-size: 12px;
 }
 
-.controls #playBtn:hover{
-  background:#43a047;
+/* Скрытый старый nowPlaying */
+.now-playing--hidden {
+  display: none;
 }
 
-/*прогресс*/
-
-.progress{
-  width:100%;
-  height:8px;
-  background:#ddd;
-  border-radius:30px;
-  overflow:hidden;
-  cursor:pointer;
+/* ---------- CONTROLS ---------- */
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
 }
 
-.fill{
-  width:0%;
-  height:100%;
-  background:#4caf50;
+.controls__btn {
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  background: #222;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  transition: .2s;
 }
 
-/*треки*/
-
-.track{
-  display:flex;
-  align-items:center;
-  gap:15px;
-  background:#fff;
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:10px;
-  cursor:pointer;
-  transition:.2s;
+.controls__btn:hover {
+  transform: scale(1.08);
+  background: #111;
 }
 
-.track:hover{
-  transform:translateY(-2px);
-  box-shadow:0 4px 12px rgba(0,0,0,.08);
+.controls__btn--play {
+  width: 64px;
+  height: 64px;
+  font-size: 28px;
+  background: #4caf50;
 }
 
-.cover{
-  width:60px;
-  height:60px;
-  border-radius:10px;
-  object-fit:cover;
-  background:#ddd;
+.controls__btn--play:hover {
+  background: #43a047;
 }
 
-.title{
-  font-weight:bold;
-  color:#222;
+/* ---------- VOLUME CONTROL ---------- */
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 20px;
 }
 
-.artist{
-  color:#666;
-  font-size:14px;
+.volume-control__icon {
+  font-size: 14px;
+  color: #666;
+}
+
+.volume-control__slider {
+  width: 80px;
+  height: 4px;
+  -webkit-appearance: none;
+  background: #ddd;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+.volume-control__slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: #4caf50;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* ---------- SPEED CONTROL ---------- */
+.speed-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 20px;
+}
+
+.speed-control__icon {
+  font-size: 13px;
+  color: #666;
+}
+
+.speed-control__select {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.speed-control__select:hover {
+  border-color: #4caf50;
+}
+
+/* ---------- PROGRESS BAR ---------- */
+.progress {
+  width: 100%;
+  height: 8px;
+  background: #ddd;
+  border-radius: 30px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.progress__fill {
+  width: 0%;
+  height: 100%;
+  background: #4caf50;
+}
+
+/* ---------- TRACKS ---------- */
+.tracks-title {
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #333;
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.track:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
+}
+
+.track__cover {
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #ddd;
+}
+
+.track__info {
+  flex: 1;
+}
+
+.track__title {
+  font-weight: bold;
+  color: #222;
+}
+
+.track__artist {
+  color: #666;
+  font-size: 14px;
 }
 </style>
 </head>
@@ -193,8 +290,8 @@ body{
 
   <!-- SIDEBAR -->
   <div class="sidebar">
-    <button id="selectFolderBtn">Выбрать папку</button>
-    <p id="folderPath">не выбрана</p>
+    <button id="selectFolderBtn" class="sidebar__button">Выбрать папку</button>
+    <p id="folderPath" class="sidebar__path">не выбрана</p>
     <div id="playlists"></div>
   </div>
 
@@ -205,38 +302,49 @@ body{
     <div class="player">
 
       <!-- Панель "Сейчас играет" -->
-    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding: 10px; background: #f9f9f9; border-radius: 14px;">
-      <img id="nowPlayingCover" class="cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24' fill='%23cccccc'%3E%3Crect width='24' height='24' rx='4' fill='%23dddddd'/%3E%3Cpath fill='%23999' d='M12 5v14l8-7z'/%3E%3C/svg%3E" alt="обложка" style="width: 50px; height: 50px; border-radius: 10px;">
-      <div style="flex: 1;">
-        <div id="nowPlayingTitle" style="font-weight: bold; color: #222; font-size: 14px;">Ничего не играет</div>
-        <div id="nowPlayingArtist" style="color: #666; font-size: 12px;">—</div>
+      <div class="now-playing">
+        <img id="nowPlayingCover" class="now-playing__cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24' fill='%23cccccc'%3E%3Crect width='24' height='24' rx='4' fill='%23dddddd'/%3E%3Cpath fill='%23999' d='M12 5v14l8-7z'/%3E%3C/svg%3E" alt="обложка">
+        <div class="now-playing__info">
+          <div id="nowPlayingTitle" class="now-playing__title">Ничего не играет</div>
+          <div id="nowPlayingArtist" class="now-playing__artist">—</div>
+        </div>
       </div>
-    </div>
 
-<!-- Скрываем старый nowPlaying если он есть -->
-<div id="nowPlaying" style="display: none;"></div>
+      <!-- Скрываем старый nowPlaying -->
+      <div id="nowPlaying" class="now-playing--hidden"></div>
 
       <div class="controls">
-        <button id="prevBtn">⏮</button>
-        <button id="playBtn">▶</button>
-        <button id="stopBtn">⏹</button>
-        <button id="nextBtn">⏭</button>
+        <button id="prevBtn" class="controls__btn">⏮</button>
+        <button id="playBtn" class="controls__btn controls__btn--play">▶</button>
+        <button id="stopBtn" class="controls__btn">⏹</button>
+        <button id="nextBtn" class="controls__btn">⏭</button>
         
-        <!-- Компактный ползунок громкости справа -->
-        <div style="display: flex; align-items: center; gap: 6px; margin-left: 20px;">
-          <span style="font-size: 14px; color: #666;">🔊</span>
-          <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8" style="width: 80px; height: 4px; -webkit-appearance: none; background: #ddd; border-radius: 4px; outline: none; cursor: pointer;">
+        <!-- Ползунок громкости -->
+        <div class="volume-control">
+          <span class="volume-control__icon">🔊</span>
+          <input type="range" id="volumeSlider" class="volume-control__slider" min="0" max="1" step="0.01" value="0.8">
+        </div>
+
+        <!-- Выпадающий список скорости -->
+        <div class="speed-control">
+          <span class="speed-control__icon">⏩</span>
+          <select id="playbackSpeedSelect" class="speed-control__select">
+            <option value="0.5">0.5x</option>
+            <option value="1" selected>1x</option>
+            <option value="1.5">1.5x</option>
+            <option value="2">2x</option>
+          </select>
         </div>
       </div>
 
       <div id="progressBar" class="progress">
-        <div id="progressFill" class="fill"></div>
+        <div id="progressFill" class="progress__fill"></div>
       </div>
 
     </div>
 
     <!-- TRACKS -->
-    <h2>Треки</h2>
+    <h2 class="tracks-title">Треки</h2>
     <div id="tracks"></div>
 
   </div>

@@ -114,6 +114,15 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
+// Выпадающий список скорости
+const speedSelect = document.getElementById('playbackSpeedSelect');
+if (speedSelect) {
+  speedSelect.addEventListener('change', (e) => {
+    audio.playbackRate = parseFloat(e.target.value);
+  });
+}
+audio.playbackRate = 1;
+
 window.addEventListener("DOMContentLoaded", async () => {
   await init();
 });
