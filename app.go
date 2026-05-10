@@ -8,14 +8,12 @@ import (
 	"MaxPlayer/models"
 )
 
-// App struct
 type App struct {
 	ctx        context.Context
 	configPath string
 	config     config.Config
 }
 
-// NewApp creates a new App application struct
 func NewApp() *App {
 	app := &App{}
 
@@ -29,8 +27,6 @@ func NewApp() *App {
 	return app
 }
 
-// startup is called when the app starts. The context is saved
-// so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 }
@@ -46,7 +42,6 @@ func (a *App) SetMusicFolder(path string) {
 		return
 	}
 
-	// Update active profile's music folder
 	profile, err := a.config.GetActiveProfile()
 	if err != nil {
 		println("No active profile:", err.Error())
@@ -56,6 +51,10 @@ func (a *App) SetMusicFolder(path string) {
 	if err := a.config.UpdateProfileMusicFolder(profile.Name, normalized); err != nil {
 		println("Error updating profile:", err.Error())
 		return
+	}
+
+	if err := library.EnsureFavoritesFolder(normalized); err != nil {
+		println("Error creating Favorites folder:", err.Error())
 	}
 
 	if err := config.Save(a.configPath, a.config); err != nil {
@@ -87,7 +86,21 @@ func (a *App) GetPlaylists() ([]models.Playlist, error) {
 	return library.GetPlaylists(profile.MusicFolder)
 }
 
-// Profile Management Methods
+func (a *App) GetFavoritesPlaylist() (models.Playlist, error) {
+	profile, err := a.config.GetActiveProfile()
+	if err != nil {
+		return models.Playlist{}, err
+	}
+	return library.GetFavoritesPlaylist(profile.MusicFolder)
+}
+
+func (a *App) GetFavoritesTracks() ([]models.AudioFile, error) {
+	profile, err := a.config.GetActiveProfile()
+	if err != nil {
+		return nil, err
+	}
+	return library.ScanAudioFiles(profile.MusicFolder, "Favorites")
+}
 
 func (a *App) GetProfiles() []config.Profile {
 	return a.config.ListProfiles()
@@ -117,6 +130,12 @@ func (a *App) CreateProfile(name, musicFolder string) error {
 		return err
 	}
 
+	if normalized != "" {
+		if err := library.EnsureFavoritesFolder(normalized); err != nil {
+			return err
+		}
+	}
+
 	return config.Save(a.configPath, a.config)
 }
 
@@ -139,6 +158,11 @@ func (a *App) RenameProfile(oldName, newName string) error {
 func (a *App) SwitchProfile(name string) error {
 	if err := a.config.SwitchProfile(name); err != nil {
 		return err
+	}
+
+	profile, err := a.config.GetActiveProfile()
+	if err == nil && profile.MusicFolder != "" {
+		library.EnsureFavoritesFolder(profile.MusicFolder)
 	}
 
 	return config.Save(a.configPath, a.config)
@@ -164,5 +188,38 @@ func (a *App) UpdateProfileMusicFolder(name, musicFolder string) error {
 		return err
 	}
 
+	if normalized != "" {
+		if err := library.EnsureFavoritesFolder(normalized); err != nil {
+			return err
+		}
+	}
+
 	return config.Save(a.configPath, a.config)
+}
+
+func (a *App) AddToFavorites(audioFilePath string) error {
+	profile, err := a.config.GetActiveProfile()
+	if err != nil {
+		return err
+	}
+
+	return library.AddToFavorites(profile.MusicFolder, audioFilePath)
+}
+
+func (a *App) RemoveFromFavorites(audioFilePath string) error {
+	profile, err := a.config.GetActiveProfile()
+	if err != nil {
+		return err
+	}
+
+	return library.RemoveFromFavorites(profile.MusicFolder, audioFilePath)
+}
+
+func (a *App) IsFavorite(audioFilePath string) (bool, error) {
+	profile, err := a.config.GetActiveProfile()
+	if err != nil {
+		return false, err
+	}
+
+	return library.IsFavorite(profile.MusicFolder, audioFilePath)
 }

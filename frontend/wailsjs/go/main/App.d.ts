@@ -3,6 +3,8 @@
 import {config} from '../models';
 import {models} from '../models';
 
+export function AddToFavorites(arg1:string):Promise<void>;
+
 export function CreateProfile(arg1:string,arg2:string):Promise<void>;
 
 export function DeleteProfile(arg1:string):Promise<void>;
@@ -11,6 +13,10 @@ export function GetActiveProfile():Promise<config.Profile>;
 
 export function GetDefaultProfile():Promise<string>;
 
+export function GetFavoritesPlaylist():Promise<models.Playlist>;
+
+export function GetFavoritesTracks():Promise<Array<models.AudioFile>>;
+
 export function GetMusicFolder():Promise<string>;
 
 export function GetPlaylists():Promise<Array<models.Playlist>>;
@@ -18,6 +24,10 @@ export function GetPlaylists():Promise<Array<models.Playlist>>;
 export function GetProfiles():Promise<Array<config.Profile>>;
 
 export function Hello():Promise<string>;
+
+export function IsFavorite(arg1:string):Promise<boolean>;
+
+export function RemoveFromFavorites(arg1:string):Promise<void>;
 
 export function RenameProfile(arg1:string,arg2:string):Promise<void>;
 
