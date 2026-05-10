@@ -17,9 +17,13 @@ func TestAudioHandler_AllowsFileWithinRoot(t *testing.T) {
 		t.Fatalf("write file: %v", err)
 	}
 
-	handler := &AudioHandler{
-		Config: &config.Config{MusicFolder: root},
+	cfg := &config.Config{
+		Profiles: []config.Profile{
+			{Name: "Test", MusicFolder: root},
+		},
+		ActiveProfile: "Test",
 	}
+	handler := &AudioHandler{Config: cfg}
 
 	req := httptest.NewRequest(http.MethodGet, "/audio/track.mp3", nil)
 	rec := httptest.NewRecorder()
@@ -34,9 +38,13 @@ func TestAudioHandler_AllowsFileWithinRoot(t *testing.T) {
 func TestAudioHandler_ForbidsPathTraversal(t *testing.T) {
 	root := t.TempDir()
 
-	handler := &AudioHandler{
-		Config: &config.Config{MusicFolder: root},
+	cfg := &config.Config{
+		Profiles: []config.Profile{
+			{Name: "Test", MusicFolder: root},
+		},
+		ActiveProfile: "Test",
 	}
+	handler := &AudioHandler{Config: cfg}
 
 	req := httptest.NewRequest(http.MethodGet, "/audio/../secret.txt", nil)
 	rec := httptest.NewRecorder()

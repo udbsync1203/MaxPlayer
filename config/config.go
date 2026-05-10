@@ -7,8 +7,15 @@ import (
 	"strings"
 )
 
-type Config struct {
+type Profile struct {
+	Name        string `json:"name"`
 	MusicFolder string `json:"musicFolder"`
+}
+
+type Config struct {
+	Profiles       []Profile `json:"profiles"`
+	ActiveProfile  string    `json:"activeProfile"`
+	DefaultProfile string    `json:"defaultProfile"`
 }
 
 func Path() (string, error) {
@@ -32,12 +39,31 @@ func Load(path string) Config {
 
 	data, err := os.ReadFile(path)
 	if err != nil {
-		config = Config{}
+		config = Config{
+			Profiles: []Profile{},
+		}
 		_ = Save(path, config)
 		return config
 	}
 
 	_ = json.Unmarshal(data, &config)
+
+	// Migration: check for old musicFolder field in raw JSON
+	var rawConfig map[string]interface{}
+	if json.Unmarshal(data, &rawConfig) == nil {
+		if oldFolder, ok := rawConfig["musicFolder"].(string); ok && oldFolder != "" && len(config.Profiles) == 0 {
+			config.Profiles = []Profile{
+				{
+					Name:        "Default",
+					MusicFolder: oldFolder,
+				},
+			}
+			config.ActiveProfile = "Default"
+			config.DefaultProfile = "Default"
+			_ = Save(path, config)
+		}
+	}
+
 	return config
 }
 
