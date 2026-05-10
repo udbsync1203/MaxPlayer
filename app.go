@@ -29,6 +29,7 @@ func NewApp() *App {
 
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+
 }
 
 func (a *App) Hello() string {
@@ -222,4 +223,67 @@ func (a *App) IsFavorite(audioFilePath string) (bool, error) {
 	}
 
 	return library.IsFavorite(profile.MusicFolder, audioFilePath)
+}
+
+func (a *App) CreatePlaylist(name string) error {
+	profile, err := a.config.GetActiveProfile()
+	if err != nil {
+		return err
+	}
+
+	return library.CreatePlaylist(profile.MusicFolder, name)
+}
+
+func (a *App) DeletePlaylist(name string) error {
+	profile, err := a.config.GetActiveProfile()
+	if err != nil {
+		return err
+	}
+
+	return library.DeletePlaylist(profile.MusicFolder, name)
+}
+
+func (a *App) RenamePlaylist(oldName, newName string) error {
+	profile, err := a.config.GetActiveProfile()
+	if err != nil {
+		return err
+	}
+
+	return library.RenamePlaylist(profile.MusicFolder, oldName, newName)
+}
+
+func (a *App) AddTrackToPlaylist(playlistName string) error {
+	profile, err := a.config.GetActiveProfile()
+	if err != nil {
+		return err
+	}
+
+	// Open file selection dialog
+	files, err := a.SelectAudioFiles()
+	if err != nil {
+		return err
+	}
+
+	// If user cancelled, return without error
+	if len(files) == 0 {
+		return nil
+	}
+
+	// Add each selected file to the playlist
+	for _, filePath := range files {
+		if err := library.AddExternalTrackToPlaylist(profile.MusicFolder, playlistName, filePath); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (a *App) RemoveTrackFromPlaylist(playlistName, trackPath string) error {
+	profile, err := a.config.GetActiveProfile()
+	if err != nil {
+		return err
+	}
+
+	return library.RemoveTrackFromPlaylist(profile.MusicFolder, playlistName, trackPath)
 }

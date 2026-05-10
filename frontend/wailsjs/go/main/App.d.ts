@@ -5,7 +5,13 @@ import {models} from '../models';
 
 export function AddToFavorites(arg1:string):Promise<void>;
 
+export function AddTrackToPlaylist(arg1:string):Promise<void>;
+
+export function CreatePlaylist(arg1:string):Promise<void>;
+
 export function CreateProfile(arg1:string,arg2:string):Promise<void>;
+
+export function DeletePlaylist(arg1:string):Promise<void>;
 
 export function DeleteProfile(arg1:string):Promise<void>;
 
@@ -29,9 +35,15 @@ export function IsFavorite(arg1:string):Promise<boolean>;
 
 export function RemoveFromFavorites(arg1:string):Promise<void>;
 
+export function RemoveTrackFromPlaylist(arg1:string,arg2:string):Promise<void>;
+
+export function RenamePlaylist(arg1:string,arg2:string):Promise<void>;
+
 export function RenameProfile(arg1:string,arg2:string):Promise<void>;
 
 export function ScanAudioFiles(arg1:string):Promise<Array<models.AudioFile>>;
+
+export function SelectAudioFiles():Promise<Array<string>>;
 
 export function SelectFolder():Promise<string>;
 

@@ -6,8 +6,20 @@ export function AddToFavorites(arg1) {
   return window['go']['main']['App']['AddToFavorites'](arg1);
 }
 
+export function AddTrackToPlaylist(arg1) {
+  return window['go']['main']['App']['AddTrackToPlaylist'](arg1);
+}
+
+export function CreatePlaylist(arg1) {
+  return window['go']['main']['App']['CreatePlaylist'](arg1);
+}
+
 export function CreateProfile(arg1, arg2) {
   return window['go']['main']['App']['CreateProfile'](arg1, arg2);
+}
+
+export function DeletePlaylist(arg1) {
+  return window['go']['main']['App']['DeletePlaylist'](arg1);
 }
 
 export function DeleteProfile(arg1) {
@@ -54,12 +66,24 @@ export function RemoveFromFavorites(arg1) {
   return window['go']['main']['App']['RemoveFromFavorites'](arg1);
 }
 
+export function RemoveTrackFromPlaylist(arg1, arg2) {
+  return window['go']['main']['App']['RemoveTrackFromPlaylist'](arg1, arg2);
+}
+
+export function RenamePlaylist(arg1, arg2) {
+  return window['go']['main']['App']['RenamePlaylist'](arg1, arg2);
+}
+
 export function RenameProfile(arg1, arg2) {
   return window['go']['main']['App']['RenameProfile'](arg1, arg2);
 }
 
 export function ScanAudioFiles(arg1) {
   return window['go']['main']['App']['ScanAudioFiles'](arg1);
+}
+
+export function SelectAudioFiles() {
+  return window['go']['main']['App']['SelectAudioFiles']();
 }
 
 export function SelectFolder() {
