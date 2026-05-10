@@ -18,7 +18,14 @@ func (h *AudioHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if h.Config == nil || h.Config.MusicFolder == "" {
+	if h.Config == nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
+
+	// Get music folder from active profile
+	profile, err := h.Config.GetActiveProfile()
+	if err != nil || profile.MusicFolder == "" {
 		w.WriteHeader(http.StatusServiceUnavailable)
 		return
 	}
@@ -28,9 +35,9 @@ func (h *AudioHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	relativePath = strings.TrimPrefix(relativePath, "\\")
 	relativePath = filepath.Clean(relativePath)
 
-	filePath := filepath.Join(h.Config.MusicFolder, relativePath)
+	filePath := filepath.Join(profile.MusicFolder, relativePath)
 
-	rel, err := filepath.Rel(h.Config.MusicFolder, filePath)
+	rel, err := filepath.Rel(profile.MusicFolder, filePath)
 	if err != nil || rel == "." || strings.HasPrefix(rel, "..") || strings.HasPrefix(filepath.ToSlash(rel), "../") {
 		w.WriteHeader(http.StatusForbidden)
 		return

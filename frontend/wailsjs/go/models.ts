@@ -1,3 +1,22 @@
+export namespace config {
+	
+	export class Profile {
+	    name: string;
+	    musicFolder: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new Profile(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.musicFolder = source["musicFolder"];
+	    }
+	}
+
+}
+
 export namespace models {
 	
 	export class AudioFile {
