@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"MaxPlayer/config"
 	"MaxPlayer/library"
@@ -30,6 +31,11 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 
+	tracks, _ := a.SearchTracks("del")
+
+	for _, track := range tracks {
+		fmt.Println(track.Title)
+	}
 }
 
 func (a *App) Hello() string {
@@ -286,4 +292,13 @@ func (a *App) RemoveTrackFromPlaylist(playlistName, trackPath string) error {
 	}
 
 	return library.RemoveTrackFromPlaylist(profile.MusicFolder, playlistName, trackPath)
+}
+
+func (a *App) SearchTracks(query string) ([]models.AudioFile, error) {
+	profile, err := a.config.GetActiveProfile()
+	if err != nil {
+		return nil, err
+	}
+
+	return library.SearchTracks(profile.MusicFolder, query)
 }

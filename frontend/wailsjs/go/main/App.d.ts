@@ -43,6 +43,8 @@ export function RenameProfile(arg1:string,arg2:string):Promise<void>;
 
 export function ScanAudioFiles(arg1:string):Promise<Array<models.AudioFile>>;
 
+export function SearchTracks(arg1:string):Promise<Array<models.AudioFile>>;
+
 export function SelectAudioFiles():Promise<Array<string>>;
 
 export function SelectFolder():Promise<string>;

@@ -82,6 +82,10 @@ export function ScanAudioFiles(arg1) {
   return window['go']['main']['App']['ScanAudioFiles'](arg1);
 }
 
+export function SearchTracks(arg1) {
+  return window['go']['main']['App']['SearchTracks'](arg1);
+}
+
 export function SelectAudioFiles() {
   return window['go']['main']['App']['SelectAudioFiles']();
 }

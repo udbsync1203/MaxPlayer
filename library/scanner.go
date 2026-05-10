@@ -31,3 +31,33 @@ func ScanAudioFiles(musicFolder string, playlistName string) ([]models.AudioFile
 
 	return result, err
 }
+
+func SearchTracks(musicFolder string, query string) ([]models.AudioFile, error) {
+	var result []models.AudioFile
+
+	queryLower := strings.ToLower(query)
+
+	err := filepath.WalkDir(musicFolder, func(path string, entry os.DirEntry, err error) error {
+		if err != nil || entry.IsDir() {
+			return nil
+		}
+
+		ext := strings.ToLower(filepath.Ext(path))
+		if ext != ".mp3" && ext != ".wav" {
+			return nil
+		}
+
+		audio := media.ReadMetadata(path, musicFolder)
+
+		titleLower := strings.ToLower(audio.Title)
+		artistLower := strings.ToLower(audio.Artist)
+
+		if strings.Contains(titleLower, queryLower) || strings.Contains(artistLower, queryLower) {
+			result = append(result, audio)
+		}
+
+		return nil
+	})
+
+	return result, err
+}
