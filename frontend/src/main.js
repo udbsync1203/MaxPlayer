@@ -340,3 +340,61 @@ audio.addEventListener("loadedmetadata", () => {
     updateNowPlayingPanel(currentTracks[currentTrackIndex]);
   }
 });
+
+// Поиск треков
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
+const tracksContainer = document.getElementById('tracks');
+let searchTimeout = null;
+
+async function performSearch(query) {
+  if (!query.trim()) {
+    searchResults.innerHTML = '';
+    if (tracksContainer) tracksContainer.style.display = 'block';
+    return;
+  }
+  
+  try {
+    searchResults.innerHTML = '<div style="text-align:center;padding:20px;">🔍 Поиск...</div>';
+    if (tracksContainer) tracksContainer.style.display = 'none';
+    
+    const results = await window.go.main.App.SearchTracks(query);
+    
+    if (!results || results.length === 0) {
+      searchResults.innerHTML = `<div style="text-align:center;padding:20px;color:#999;">Ничего не найдено для "${query}"</div>`;
+    } else {
+      searchResults.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid #4caf50;">
+          <h3 style="margin:0;"> Результаты (${results.length})</h3>
+          <button onclick="document.getElementById('searchInput').value=''; performSearch('')" style="background:none;border:none;font-size:20px;cursor:pointer;">✕</button>
+        </div>
+      `;
+      
+      results.forEach(track => {
+        const div = document.createElement('div');
+        div.className = 'search-result-item';
+        div.innerHTML = `
+          <img class="search-result-cover" src="${track.coverBase64 ? `data:image/jpeg;base64,${track.coverBase64}` : 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\' viewBox=\'0 0 24 24\' fill=\'%23cccccc\'%3E%3Crect width=\'24\' height=\'24\' rx=\'4\' fill=\'%23dddddd\'/%3E%3Cpath fill=\'%23999\' d=\'M12 5v14l8-7z\'/%3E%3C/svg%3E'}">
+          <div style="flex:1;">
+            <div style="font-weight:bold;">${track.title || 'Без названия'}</div>
+            <div style="color:#666;font-size:12px;">${track.artist || 'Неизвестный'}</div>
+          </div>
+        `;
+        div.addEventListener('click', () => {
+          if (typeof playTrackByPath === 'function') playTrackByPath(track.path);
+        });
+        searchResults.appendChild(div);
+      });
+    }
+  } catch(e) {
+    console.error(e);
+    searchResults.innerHTML = '<div style="text-align:center;padding:20px;color:#f44336;">Ошибка поиска</div>';
+  }
+}
+
+if (searchInput) {
+  searchInput.addEventListener('input', (e) => {
+    if (searchTimeout) clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => performSearch(e.target.value), 300);
+  });
+}
