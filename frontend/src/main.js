@@ -13,7 +13,6 @@ const btn = document.getElementById("selectFolderBtn");
 const refreshBtn = document.getElementById("refreshBtn");
 
 const playBtn = document.getElementById("playBtn");
-const stopBtn = document.getElementById("stopBtn");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 const progressBar = document.getElementById("progressBar");
@@ -30,6 +29,16 @@ let currentTracks = [];
 let currentTrackIndex = -1;
 
 const audio = new Audio();
+
+/** Относительный путь из ScanAudioFiles → URL, который отдаёт AudioHandler (см. /audio/...). */
+function audioStreamUrl(relativePath) {
+  if (!relativePath) return "";
+  const parts = String(relativePath)
+    .replace(/\\/g, "/")
+    .split("/")
+    .filter((seg) => seg.length > 0);
+  return "/audio/" + parts.map((seg) => encodeURIComponent(seg)).join("/");
+}
 
 // Функция обновления панели "Сейчас играет"
 function updateNowPlayingPanel(track) {
@@ -143,14 +152,16 @@ btn.addEventListener("click", async () => {
   await init();
 });
 
-refreshBtn.addEventListener("click", async () => {
-  if (!currentPlaylist) return;
-  try {
-    await loadTracks(currentPlaylist);
-  } catch (e) {
-    console.error("Ошибка обновления:", e);
-  }
-});
+if (refreshBtn) {
+  refreshBtn.addEventListener("click", async () => {
+    if (!currentPlaylist) return;
+    try {
+      await loadTracks(currentPlaylist);
+    } catch (e) {
+      console.error("Ошибка обновления:", e);
+    }
+  });
+}
 
 async function loadPlaylists() {
   playlistsEl.innerHTML = "Загрузка...";
@@ -174,9 +185,9 @@ async function selectPlaylist(name, element) {
   currentPlaylist = name;
   document
     .querySelectorAll(".playlist")
-    .forEach((el) => el.classList.remove("active"));
+    .forEach((el) => el.classList.remove("playlist--active"));
 
-  element.classList.add("active");
+  element.classList.add("playlist--active");
   await loadTracks(name);
 }
 
@@ -207,29 +218,33 @@ function createTrack(track, index) {
   div.className = "track";
 
   const img = document.createElement("img");
-  img.className = "cover";
+  img.className = "track__cover";
+
   img.src = track.coverBase64
     ? `data:image/jpeg;base64,${track.coverBase64}`
-    : "";
+    : "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%23ddd'/%3E%3Cpath fill='%23999' d='M12 5v14l8-7z'/%3E%3C/svg%3E";
 
   const info = document.createElement("div");
+  info.className = "track__info";
 
   const title = document.createElement("div");
-  title.className = "title";
-  title.textContent = track.title;
+  title.className = "track__title";
+  title.textContent = track.title || "Без названия";
 
   const artist = document.createElement("div");
-  artist.className = "artist";
-  artist.textContent = track.artist;
+  artist.className = "track__artist";
+  artist.textContent = track.artist || "Неизвестный исполнитель";
 
   info.appendChild(title);
   info.appendChild(artist);
+
   div.appendChild(img);
   div.appendChild(info);
 
-  div.addEventListener("click", () => {
-    playTrack(index);
-  });
+  div.addEventListener("click", async () => {
+  currentTrackIndex = index;
+  await playTrack(currentTrackIndex);
+});
 
   return div;
 }
@@ -241,8 +256,17 @@ function playTrack(index) {
 
   const track = currentTracks[index];
 
-  audio.src = track.path;
-  audio.play();
+  const src = audioStreamUrl(track.path);
+  if (!src) {
+    console.error("Пустой путь к файлу");
+    return;
+  }
+  audio.src = src;
+  audio.play()
+    .then(() => {
+      updatePlayButton();
+    })
+    .catch((err) => console.error("Ошибка воспроизведения:", err));
 
   // Обновляем старую надпись (для совместимости)
   if (nowPlaying) {
@@ -253,22 +277,21 @@ function playTrack(index) {
   updateNowPlayingPanel(track);
 }
 
-playBtn.addEventListener("click", () => {
-  if (audio.src) {
+playBtn.addEventListener("click", async () => {
+  try {
+    if (!audio.src && currentTracks.length > 0) {
+      playTrack(0);
+      return;
+    }
+
     if (audio.paused) {
-      audio.play();
+      await audio.play();
     } else {
       audio.pause();
     }
-  } else if (currentTracks.length > 0) {
-    playTrack(0);
+  } catch (err) {
+    console.error("Ошибка play:", err);
   }
-});
-
-stopBtn.addEventListener("click", () => {
-  audio.pause();
-  audio.currentTime = 0;
-  progressFill.style.width = "0%";
 });
 
 nextBtn.addEventListener("click", () => {
@@ -304,13 +327,13 @@ function prevTrack() {
 }
 
 // Обновляем кнопку play/pause при событиях аудио
-audio.addEventListener("play", () => {
-  playBtn.textContent = "⏸";
-});
+function updatePlayButton() {
+  playBtn.textContent = audio.paused ? "▶" : "⏸";
+}
 
-audio.addEventListener("pause", () => {
-  playBtn.textContent = "▶";
-});
+audio.addEventListener("play", updatePlayButton);
+audio.addEventListener("pause", updatePlayButton);
+audio.addEventListener("ended", updatePlayButton);
 
 audio.addEventListener("ended", () => {
   nextTrack();
