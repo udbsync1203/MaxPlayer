@@ -285,6 +285,203 @@ body {
   font-size: 14px;
 }
 
+/* ---------- PROFILE & SETTINGS ---------- */
+.profile-bar {
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-bar__label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.profile-bar__select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  background: #fafafa;
+  cursor: pointer;
+}
+
+.profile-bar__select:focus {
+  outline: none;
+  border-color: #4caf50;
+}
+
+.profile-bar__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.profile-bar__btn {
+  flex: 1;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.profile-bar__btn--settings {
+  background: #eceff1;
+  color: #37474f;
+}
+
+.profile-bar__btn--settings:hover {
+  background: #dfe6e9;
+}
+
+.profile-bar__btn--folder {
+  background: #4caf50;
+  color: #fff;
+}
+
+.profile-bar__btn--folder:hover {
+  background: #43a047;
+}
+
+/* Settings modal */
+.settings-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1100;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.settings-modal--open {
+  display: flex;
+}
+
+.settings-modal__panel {
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px 24px;
+  width: 100%;
+  max-width: 440px;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.eq-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.eq-slider-row label {
+  width: 72px;
+  font-size: 13px;
+  color: #555;
+  flex-shrink: 0;
+}
+
+.eq-slider-row input[type="range"] {
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-modal__hotkeys {
+  font-size: 12px;
+  color: #666;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.settings-modal__title {
+  margin: 0 0 18px 0;
+  font-size: 18px;
+  color: #222;
+}
+
+.settings-modal__field {
+  margin-bottom: 16px;
+}
+
+.settings-modal__field-label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.settings-modal__select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 14px;
+  background: #fafafa;
+  cursor: pointer;
+}
+
+.settings-modal__path {
+  font-size: 13px;
+  color: #444;
+  word-break: break-word;
+  padding: 10px 12px;
+  background: #f5f5f5;
+  border-radius: 10px;
+  border: 1px solid #eee;
+  min-height: 42px;
+}
+
+.settings-modal__row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.settings-modal__btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.settings-modal__btn--primary {
+  background: #4caf50;
+  color: #fff;
+}
+
+.settings-modal__btn--primary:hover {
+  background: #43a047;
+}
+
+.settings-modal__btn--secondary {
+  background: #eceff1;
+  color: #37474f;
+}
+
+.settings-modal__btn--secondary:hover {
+  background: #dfe6e9;
+}
+
+.settings-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
 /* Обложка в результатах поиска */
 .cover {
   width: 50px;
@@ -305,13 +502,20 @@ body {
 
   <!-- SIDEBAR -->
   <div class="sidebar">
-    <button id="selectFolderBtn" class="sidebar__button">Выбрать папку</button>
-    <p id="folderPath" class="sidebar__path">не выбрана</p>
+    <div class="profile-bar">
+      <span class="profile-bar__label" data-i18n="profile">Профиль</span>
+      <select id="sidebarProfileSelect" class="profile-bar__select" aria-label="Текущий профиль"></select>
+      <p id="folderPath" class="sidebar__path">не выбрана</p>
+      <div class="profile-bar__actions">
+        <button type="button" id="openSettingsBtn" class="profile-bar__btn profile-bar__btn--settings" data-i18n="settings">⚙ Настройки</button>
+        <button type="button" id="quickPickFolderBtn" class="profile-bar__btn profile-bar__btn--folder" data-i18n="folder">📁 Папка</button>
+      </div>
+    </div>
 
     <!-- Кнопки управления плейлистами -->
     <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-      <button id="createPlaylistBtn" style="flex: 1; background: #2196f3; padding: 10px; border: none; border-radius: 10px; color: #fff; font-size: 14px; cursor: pointer;">➕ Создать</button>
-      <button id="refreshPlaylistsBtn" style="flex: 1; background: #9e9e9e; padding: 10px; border: none; border-radius: 10px; color: #fff; font-size: 14px; cursor: pointer;">🔄 Обновить</button>
+      <button id="createPlaylistBtn" type="button" style="flex: 1; background: #2196f3; padding: 10px; border: none; border-radius: 10px; color: #fff; font-size: 14px; cursor: pointer;" data-i18n="createPlaylist">➕ Создать</button>
+      <button id="refreshPlaylistsBtn" type="button" style="flex: 1; background: #9e9e9e; padding: 10px; border: none; border-radius: 10px; color: #fff; font-size: 14px; cursor: pointer;" data-i18n="refreshPlaylists">🔄 Обновить</button>
     </div>
 
     <div id="playlists"></div>
@@ -319,11 +523,11 @@ body {
     <!-- Модальное окно для создания плейлиста -->
     <div id="createPlaylistModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
       <div style="background: #fff; border-radius: 20px; padding: 25px; width: 300px; margin: 20px;">
-        <h3 style="margin: 0 0 15px 0;">Новый плейлист</h3>
-        <input type="text" id="newPlaylistName" placeholder="Название плейлиста" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 15px;">
+        <h3 style="margin: 0 0 15px 0;" data-i18n="newPlaylistModalTitle">Новый плейлист</h3>
+        <input type="text" id="newPlaylistName" data-i18n-placeholder="newPlaylistPlaceholder" placeholder="Название плейлиста" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 15px;">
         <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button id="cancelPlaylistBtn" style="padding: 8px 16px; background: #ddd; border: none; border-radius: 8px; cursor: pointer;">Отмена</button>
-          <button id="confirmPlaylistBtn" style="padding: 8px 16px; background: #4caf50; color: #fff; border: none; border-radius: 8px; cursor: pointer;">Создать</button>
+          <button type="button" id="cancelPlaylistBtn" style="padding: 8px 16px; background: #ddd; border: none; border-radius: 8px; cursor: pointer;" data-i18n="cancel">Отмена</button>
+          <button type="button" id="confirmPlaylistBtn" style="padding: 8px 16px; background: #4caf50; color: #fff; border: none; border-radius: 8px; cursor: pointer;" data-i18n="create">Создать</button>
         </div>
       </div>
     </div>
@@ -331,11 +535,67 @@ body {
     <!-- Модальное окно для подтверждения удаления -->
     <div id="deleteConfirmModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
       <div style="background: #fff; border-radius: 20px; padding: 25px; width: 350px; margin: 20px;">
-        <h3 style="margin: 0 0 15px 0;">Удалить трек?</h3>
+        <h3 style="margin: 0 0 15px 0;" data-i18n="deleteTrackTitle">Удалить трек?</h3>
         <p id="deleteConfirmText" style="margin: 0 0 20px 0; color: #666;"></p>
         <div style="display: flex; gap: 10px; justify-content: flex-end;">
-          <button id="cancelDeleteBtn" style="padding: 8px 16px; background: #ddd; border: none; border-radius: 8px; cursor: pointer;">Отмена</button>
-          <button id="confirmDeleteBtn" style="padding: 8px 16px; background: #f44336; color: #fff; border: none; border-radius: 8px; cursor: pointer;">Удалить</button>
+          <button type="button" id="cancelDeleteBtn" style="padding: 8px 16px; background: #ddd; border: none; border-radius: 8px; cursor: pointer;" data-i18n="deleteTrackCancel">Отмена</button>
+          <button type="button" id="confirmDeleteBtn" style="padding: 8px 16px; background: #f44336; color: #fff; border: none; border-radius: 8px; cursor: pointer;" data-i18n="deleteTrackConfirm">Удалить</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Настройки: профиль + корневая папка -->
+    <div id="settingsModal" class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+      <div class="settings-modal__panel">
+        <h2 id="settingsModalTitle" class="settings-modal__title" data-i18n="settingsTitle">Настройки</h2>
+
+        <div class="settings-modal__field">
+          <label class="settings-modal__field-label" for="interfaceLangSelect" data-i18n="interfaceLanguage">Язык интерфейса</label>
+          <select id="interfaceLangSelect" class="settings-modal__select">
+            <option value="ru">Русский</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+
+        <div class="settings-modal__field">
+          <label class="settings-modal__field-label" for="settingsProfileSelect" data-i18n="settingsProfile">Профиль</label>
+          <select id="settingsProfileSelect" class="settings-modal__select"></select>
+        </div>
+
+        <div class="settings-modal__field">
+          <span class="settings-modal__field-label" data-i18n="settingsRootFolder">Корневая папка музыки</span>
+          <div id="settingsFolderPath" class="settings-modal__path">—</div>
+        </div>
+
+        <div class="settings-modal__field settings-modal__row">
+          <button type="button" id="settingsPickFolderBtn" class="settings-modal__btn settings-modal__btn--primary" data-i18n="pickFolder">Выбрать папку…</button>
+          <button type="button" id="settingsNewProfileBtn" class="settings-modal__btn settings-modal__btn--secondary" data-i18n="newProfile">Новый профиль</button>
+        </div>
+
+        <div class="settings-modal__field">
+          <span class="settings-modal__field-label" data-i18n="equalizer">Эквалайзер</span>
+          <div class="eq-slider-row">
+            <label for="eqBassSlider" data-i18n="eqBass">Низы</label>
+            <input type="range" id="eqBassSlider" min="-12" max="12" step="0.5" value="0">
+          </div>
+          <div class="eq-slider-row">
+            <label for="eqMidSlider" data-i18n="eqMid">Середина</label>
+            <input type="range" id="eqMidSlider" min="-12" max="12" step="0.5" value="0">
+          </div>
+          <div class="eq-slider-row">
+            <label for="eqTrebleSlider" data-i18n="eqTreble">Верха</label>
+            <input type="range" id="eqTrebleSlider" min="-12" max="12" step="0.5" value="0">
+          </div>
+          <button type="button" id="eqResetBtn" class="settings-modal__btn settings-modal__btn--secondary" style="margin-top:6px" data-i18n="eqReset">Сброс</button>
+        </div>
+
+        <div class="settings-modal__field">
+          <span class="settings-modal__field-label" data-i18n="hotkeysTitle">Горячие клавиши</span>
+          <p id="hotkeysHelp" class="settings-modal__hotkeys" data-i18n="hotkeysText"></p>
+        </div>
+
+        <div class="settings-modal__footer">
+          <button type="button" id="closeSettingsBtn" class="settings-modal__btn settings-modal__btn--secondary" data-i18n="close">Закрыть</button>
         </div>
       </div>
     </div>
@@ -347,8 +607,8 @@ body {
     <!-- ПОИСК -->
     <div style="background: #fff; border-radius: 14px; padding: 20px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0, 0, 0, .08);">
       <div style="display: flex; gap: 10px; align-items: center;">
-        <input type="text" id="searchInput" placeholder="🔍 Поиск песен по названию или исполнителю..." style="flex: 1; padding: 12px 16px; border: 1px solid #ddd; border-radius: 25px; font-size: 14px; outline: none;">
-        <button id="clearSearchBtn" style="padding: 10px 20px; background: #f44336; color: white; border: none; border-radius: 25px; cursor: pointer; display: none;">✕ Очистить</button>
+        <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="🔍 Поиск песен по названию или исполнителю..." style="flex: 1; padding: 12px 16px; border: 1px solid #ddd; border-radius: 25px; font-size: 14px; outline: none;">
+        <button type="button" id="clearSearchBtn" style="padding: 10px 20px; background: #f44336; color: white; border: none; border-radius: 25px; cursor: pointer; display: none;" data-i18n="clearSearch">✕ Очистить</button>
       </div>
       <div id="searchResults" style="margin-top: 15px; max-height: 400px; overflow-y: auto;"></div>
     </div>
@@ -358,7 +618,7 @@ body {
 
       <!-- Панель "Сейчас играет" -->
       <div class="now-playing">
-        <img id="nowPlayingCover" class="now-playing__cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24' fill='%23cccccc'%3E%3Crect width='24' height='24' rx='4' fill='%23dddddd'/%3E%3Cpath fill='%23999' d='M12 5v14l8-7z'/%3E%3C/svg%3E" alt="обложка">
+        <img id="nowPlayingCover" class="now-playing__cover" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 24 24' fill='%23cccccc'%3E%3Crect width='24' height='24' rx='4' fill='%23dddddd'/%3E%3Cpath fill='%23999' d='M12 5v14l8-7z'/%3E%3C/svg%3E" alt="обложка" data-i18n-alt="coverAlt">
         <div class="now-playing__info">
           <div id="nowPlayingTitle" class="now-playing__title">Ничего не играет</div>
           <div id="nowPlayingArtist" class="now-playing__artist">—</div>
@@ -399,8 +659,8 @@ body {
 
     <!-- TRACKS -->
     <div style="position: sticky; top: 0; background: #f5f5f5; z-index: 10; padding: 10px 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-      <h2 class="tracks-title" style="margin: 0;">Треки</h2>
-      <button id="addTracksBtn" style="background: #4caf50; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-size: 14px; font-weight: bold; transition: 0.2s;">+ Добавить треки</button>
+      <h2 class="tracks-title" style="margin: 0;" data-i18n="tracks">Треки</h2>
+      <button type="button" id="addTracksBtn" style="background: #4caf50; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-size: 14px; font-weight: bold; transition: 0.2s;" data-i18n="addTracks">+ Добавить треки</button>
     </div>
     <div id="tracks"></div>
 
@@ -408,6 +668,8 @@ body {
 
 </div>
 
+<script type="application/json" id="maxplayer-i18n-ru">{"appTitle":"MaxPlayer","profile":"\u041f\u0440\u043e\u0444\u0438\u043b\u044c","settings":"\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438","folder":"\u041f\u0430\u043f\u043a\u0430","settingsTitle":"\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438","settingsProfile":"\u041f\u0440\u043e\u0444\u0438\u043b\u044c","settingsRootFolder":"\u041a\u043e\u0440\u043d\u0435\u0432\u0430\u044f \u043f\u0430\u043f\u043a\u0430 \u043c\u0443\u0437\u044b\u043a\u0438","settingsNotChosen":"\u043d\u0435 \u0432\u044b\u0431\u0440\u0430\u043d\u0430","pickFolder":"\u0412\u044b\u0431\u0440\u0430\u0442\u044c \u043f\u0430\u043f\u043a\u0443...","newProfile":"\u041d\u043e\u0432\u044b\u0439 \u043f\u0440\u043e\u0444\u0438\u043b\u044c","close":"\u0417\u0430\u043a\u0440\u044b\u0442\u044c","createPlaylist":"+ \u0421\u043e\u0437\u0434\u0430\u0442\u044c","refreshPlaylists":"\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c","newPlaylistModalTitle":"\u041d\u043e\u0432\u044b\u0439 \u043f\u043b\u0435\u0439\u043b\u0438\u0441\u0442","newPlaylistPlaceholder":"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u043f\u043b\u0435\u0439\u043b\u0438\u0441\u0442\u0430","cancel":"\u041e\u0442\u043c\u0435\u043d\u0430","create":"\u0421\u043e\u0437\u0434\u0430\u0442\u044c","deleteTrackTitle":"\u0423\u0434\u0430\u043b\u0438\u0442\u044c \u0442\u0440\u0435\u043a?","deleteTrackCancel":"\u041e\u0442\u043c\u0435\u043d\u0430","deleteTrackConfirm":"\u0423\u0434\u0430\u043b\u0438\u0442\u044c","searchPlaceholder":"\u041f\u043e\u0438\u0441\u043a \u043f\u0435\u0441\u0435\u043d \u043f\u043e \u043d\u0430\u0437\u0432\u0430\u043d\u0438\u044e \u0438\u043b\u0438 \u0438\u0441\u043f\u043e\u043b\u043d\u0438\u0442\u0435\u043b\u044e...","clearSearch":"\u041e\u0447\u0438\u0441\u0442\u0438\u0442\u044c","tracks":"\u0422\u0440\u0435\u043a\u0438","addTracks":"+ \u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u0442\u0440\u0435\u043a\u0438","notPlaying":"\u041d\u0438\u0447\u0435\u0433\u043e \u043d\u0435 \u0438\u0433\u0440\u0430\u0435\u0442","unknownArtist":"\u041d\u0435\u0438\u0437\u0432\u0435\u0441\u0442\u043d\u044b\u0439 \u0438\u0441\u043f\u043e\u043b\u043d\u0438\u0442\u0435\u043b\u044c","unknownAuthor":"\u041d\u0435\u0438\u0437\u0432\u0435\u0441\u0442\u043d\u044b\u0439 \u0430\u0432\u0442\u043e\u0440","noTitle":"\u0411\u0435\u0437 \u043d\u0430\u0437\u0432\u0430\u043d\u0438\u044f","noFolderHint":"\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043a\u043e\u0440\u043d\u0435\u0432\u0443\u044e \u043f\u0430\u043f\u043a\u0443 \u0441 \u043f\u043b\u0435\u0439\u043b\u0438\u0441\u0442\u0430\u043c\u0438: \u00ab\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438\u00bb \u0438\u043b\u0438 \u00ab\u041f\u0430\u043f\u043a\u0430\u00bb.","newProfilePrompt":"\u0418\u043c\u044f \u043d\u043e\u0432\u043e\u0433\u043e \u043f\u0440\u043e\u0444\u0438\u043b\u044f:","loading":"\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430...","noTracks":"\u041d\u0435\u0442 \u0442\u0440\u0435\u043a\u043e\u0432","enterPlaylistName":"\u0412\u0432\u0435\u0434\u0438\u0442\u0435 \u043d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u043f\u043b\u0435\u0439\u043b\u0438\u0441\u0442\u0430","creating":"\u0421\u043e\u0437\u0434\u0430\u043d\u0438\u0435...","choosePlaylistFirst":"\u0421\u043d\u0430\u0447\u0430\u043b\u0430 \u0432\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u043f\u043b\u0435\u0439\u043b\u0438\u0441\u0442","favoritesHint":"\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 \u043a\u043d\u043e\u043f\u043a\u0443 \u00ab\u2605\u00bb \u0434\u043b\u044f \u0434\u043e\u0431\u0430\u0432\u043b\u0435\u043d\u0438\u044f \u0442\u0440\u0435\u043a\u043e\u0432 \u0432 \u0438\u0437\u0431\u0440\u0430\u043d\u043d\u043e\u0435","pickingFiles":"\u0412\u044b\u0431\u043e\u0440 \u0444\u0430\u0439\u043b\u043e\u0432...","refreshing":"...","refreshLabel":"\u041e\u0431\u043d\u043e\u0432\u0438\u0442\u044c","interfaceLanguage":"\u042f\u0437\u044b\u043a \u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430","langRu":"\u0420\u0443\u0441\u0441\u043a\u0438\u0439","langEn":"English","equalizer":"\u042d\u043a\u0432\u0430\u043b\u0430\u0439\u0437\u0435\u0440","eqBass":"\u041d\u0438\u0437\u044b","eqMid":"\u0421\u0435\u0440\u0435\u0434\u0438\u043d\u0430","eqTreble":"\u0412\u0435\u0440\u0445\u0430","eqReset":"\u0421\u0431\u0440\u043e\u0441","hotkeysTitle":"\u0413\u043e\u0440\u044f\u0447\u0438\u0435 \u043a\u043b\u0430\u0432\u0438\u0448\u0438","hotkeysText":"\u041f\u0440\u043e\u0431\u0435\u043b - \u043f\u0430\u0443\u0437\u0430/\u0432\u043e\u0441\u043f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0435\u043d\u0438\u0435; \u0441\u0442\u0440\u0435\u043b\u043a\u0438 \u0432\u043b\u0435\u0432\u043e/\u0432\u043f\u0440\u0430\u0432\u043e - \u0442\u0440\u0435\u043a; \u0432\u0432\u0435\u0440\u0445/\u0432\u043d\u0438\u0437 - \u0433\u0440\u043e\u043c\u043a\u043e\u0441\u0442\u044c; M - \u0431\u0435\u0437 \u0437\u0432\u0443\u043a\u0430; N/P - \u0441\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439/\u043f\u0440\u0435\u0434\u044b\u0434\u0443\u0449\u0438\u0439; ,/. - -5 \u0441 / +5 \u0441; Home/End - \u043d\u0430\u0447\u0430\u043b\u043e/\u043a\u043e\u043d\u0435\u0446 \u0442\u0440\u0435\u043a\u0430; Esc - \u0437\u0430\u043a\u0440\u044b\u0442\u044c \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438","searchLoading":"\u041f\u043e\u0438\u0441\u043a...","searchNothing":"\u041d\u0438\u0447\u0435\u0433\u043e \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u043e","searchResults":"\u0420\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u044b \u043f\u043e\u0438\u0441\u043a\u0430","searchError":"\u041e\u0448\u0438\u0431\u043a\u0430 \u043f\u0440\u0438 \u0432\u044b\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u0438 \u043f\u043e\u0438\u0441\u043a\u0430","genericError":"\u041e\u0448\u0438\u0431\u043a\u0430","coverAlt":"\u043e\u0431\u043b\u043e\u0436\u043a\u0430"}</script>
+<script type="application/json" id="maxplayer-i18n-en">{"appTitle":"MaxPlayer","profile":"Profile","settings":"Settings","folder":"Folder","settingsTitle":"Settings","settingsProfile":"Profile","settingsRootFolder":"Music library root folder","settingsNotChosen":"not set","pickFolder":"Choose folder...","newProfile":"New profile","close":"Close","createPlaylist":"+ Create","refreshPlaylists":"Refresh","newPlaylistModalTitle":"New playlist","newPlaylistPlaceholder":"Playlist name","cancel":"Cancel","create":"Create","deleteTrackTitle":"Delete track?","deleteTrackCancel":"Cancel","deleteTrackConfirm":"Delete","searchPlaceholder":"Search by title or artist...","clearSearch":"Clear","tracks":"Tracks","addTracks":"+ Add tracks","notPlaying":"Nothing playing","unknownArtist":"Unknown artist","unknownAuthor":"Unknown artist","noTitle":"Untitled","noFolderHint":"Choose the root folder with playlists: Settings or Folder button.","newProfilePrompt":"New profile name:","loading":"Loading...","noTracks":"No tracks","enterPlaylistName":"Enter a playlist name","creating":"Creating...","choosePlaylistFirst":"Select a playlist first","favoritesHint":"Use the star button to add tracks to favorites","pickingFiles":"Choosing files...","refreshing":"...","refreshLabel":"Refresh","interfaceLanguage":"Interface language","langRu":"Russian","langEn":"English","equalizer":"Equalizer","eqBass":"Bass","eqMid":"Mid","eqTreble":"Treble","eqReset":"Reset","hotkeysTitle":"Keyboard shortcuts","hotkeysText":"Space - play/pause; Left/Right - track; Up/Down - volume; M - mute; N/P - next/prev; comma/period - seek -5s/+5s; Home/End - start/end of track; Esc - close settings","searchLoading":"Searching...","searchNothing":"Nothing found","searchResults":"Search results","searchError":"Search failed","genericError":"Error","coverAlt":"cover art"}</script>
 <script type="module" src="/src/main.js"></script>
 
 </body>
