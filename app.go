@@ -30,12 +30,6 @@ func NewApp() *App {
 
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-
-	tracks, _ := a.SearchTracks("del")
-
-	for _, track := range tracks {
-		fmt.Println(track.Title)
-	}
 }
 
 func (a *App) Hello() string {

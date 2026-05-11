@@ -34,6 +34,7 @@ func ScanAudioFiles(musicFolder string, playlistName string) ([]models.AudioFile
 
 func SearchTracks(musicFolder string, query string) ([]models.AudioFile, error) {
 	var result []models.AudioFile
+	seen := make(map[string]bool) // Track actual file paths to avoid duplicates
 
 	queryLower := strings.ToLower(query)
 
@@ -47,6 +48,17 @@ func SearchTracks(musicFolder string, query string) ([]models.AudioFile, error) 
 			return nil
 		}
 
+		// Get the real path (resolve symlinks)
+		realPath, err := filepath.EvalSymlinks(path)
+		if err != nil {
+			realPath = path // If can't resolve, use original path
+		}
+
+		// Skip if we've already added this file
+		if seen[realPath] {
+			return nil
+		}
+
 		audio := media.ReadMetadata(path, musicFolder)
 
 		titleLower := strings.ToLower(audio.Title)
@@ -54,6 +66,7 @@ func SearchTracks(musicFolder string, query string) ([]models.AudioFile, error) 
 
 		if strings.Contains(titleLower, queryLower) || strings.Contains(artistLower, queryLower) {
 			result = append(result, audio)
+			seen[realPath] = true
 		}
 
 		return nil

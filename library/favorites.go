@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 )
 
 const FavoritesFolderName = "Favorites"
@@ -51,8 +52,15 @@ func AddToFavorites(musicFolder, relativeAudioPath string) error {
 		return fmt.Errorf("file already exists in favorites: %s", fileName)
 	}
 
-	if err := os.Symlink(absAudioPath, symlinkPath); err != nil {
-		return fmt.Errorf("failed to create symlink: %w", err)
+	// On Windows, symlinks require admin privileges, so we copy the file instead
+	if runtime.GOOS == "windows" {
+		if err := copyFile(absAudioPath, symlinkPath); err != nil {
+			return fmt.Errorf("failed to copy file: %w", err)
+		}
+	} else {
+		if err := os.Symlink(absAudioPath, symlinkPath); err != nil {
+			return fmt.Errorf("failed to create symlink: %w", err)
+		}
 	}
 
 	return nil
