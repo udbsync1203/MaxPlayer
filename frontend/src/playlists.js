@@ -164,7 +164,34 @@ export async function loadPlaylists() {
     });
   } catch (error) {
     console.error('Load playlists error:', error);
-    playlistsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--danger);">${t('genericError')}: ${error}</div>`;
+
+    // Check if error is about missing folder
+    const errorStr = String(error);
+    if (errorStr.includes('no such file or directory') || errorStr.includes('music folder is not set')) {
+      // Show folder selection prompt
+      playlistsGrid.innerHTML = `
+        <div style="grid-column: 1/-1; display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 40px; text-align: center;">
+          <div style="font-size: 48px;">📁</div>
+          <div style="font-size: 18px; color: var(--text-primary); font-weight: 600;">${t('musicFolder')}</div>
+          <div style="color: var(--text-secondary);">${t('notChosen')}</div>
+          <button id="pickFolderFromPlaylists" class="btn-primary" style="margin-top: 10px;">${t('pickFolder')}</button>
+        </div>
+      `;
+
+      // Add click handler for the button
+      const pickBtn = document.getElementById('pickFolderFromPlaylists');
+      if (pickBtn) {
+        pickBtn.addEventListener('click', () => {
+          // Switch to settings view
+          const settingsBtn = document.querySelector('[data-view="settings"]');
+          if (settingsBtn) {
+            settingsBtn.click();
+          }
+        });
+      }
+    } else {
+      playlistsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--danger);">${t('genericError')}: ${error}</div>`;
+    }
   }
 }
 

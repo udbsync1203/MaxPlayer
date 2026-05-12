@@ -1034,3 +1034,86 @@ body {
     order: 3;
   }
 }
+
+/* ========================================
+   Light Theme Overrides - Remove Gradients
+   ======================================== */
+
+:root[data-theme="light"] .sidebar {
+  background: var(--bg-sidebar);
+}
+
+:root[data-theme="light"] .sidebar-logo h2 {
+  background: var(--purple-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+:root[data-theme="light"] .nav-btn.active {
+  background: var(--purple-light);
+  color: var(--purple-primary);
+  border-left: 3px solid var(--purple-primary);
+}
+
+:root[data-theme="light"] .btn-primary {
+  background: var(--purple-primary);
+  color: #fff;
+}
+
+:root[data-theme="light"] .btn-primary:hover {
+  background: var(--purple-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+}
+
+:root[data-theme="light"] .playlist-card:hover {
+  background: var(--bg-hover);
+  transform: translateY(-2px);
+  border-color: var(--purple-primary);
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.15);
+}
+
+:root[data-theme="light"] .track-card:hover {
+  background: var(--bg-hover);
+  transform: translateY(-2px);
+  border-color: var(--border-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+:root[data-theme="light"] .settings-section {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  border: 1px solid var(--border-color);
+}
+
+:root[data-theme="light"] .player {
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+}
+
+:root[data-theme="light"] .player-btn-play {
+  background: var(--purple-primary);
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.25);
+}
+
+:root[data-theme="light"] .player-btn-play:hover {
+  background: var(--purple-hover);
+  box-shadow: 0 4px 12px rgba(168, 85, 247, 0.35);
+}
+
+:root[data-theme="light"] .player-progress-fill {
+  background: var(--purple-primary);
+  box-shadow: 0 0 6px rgba(168, 85, 247, 0.4);
+}
+
+:root[data-theme="light"] .modal-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
